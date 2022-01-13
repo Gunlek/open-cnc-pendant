@@ -1,0 +1,5 @@
+embedded/.pio
+.vscode
+embedded/.vscode
+node_modules
+package-lock.json
