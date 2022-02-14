@@ -29,3 +29,10 @@ enum Axis {
     AXIS_Z          =   0x03
 };
 
+enum Step {
+    STEP_0_1        =   1,
+    STEP_1          =   10,
+    STEP_10         =   100,
+    STEP_100        =   1000
+};
+

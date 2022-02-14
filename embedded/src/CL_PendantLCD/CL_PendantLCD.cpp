@@ -25,9 +25,10 @@ CL_PendantLCD::CL_PendantLCD(int rs, int enable, int d0, int d1, int d2, int d3)
  * @param i_state               The current state of the pendant
  * @param i_controlledAxis      The currently controlled axis
  */
-void CL_PendantLCD::setParameters(PendantState &i_state, Axis &i_controlledAxis) {
+void CL_PendantLCD::setParameters(PendantState &i_state, Axis &i_controlledAxis, Step &i_controlStep) {
     this->m_state = &i_state;
     this->m_controlledAxis = &i_controlledAxis;
+    this->m_controlStep = &i_controlStep;
 }
 
 /**
@@ -62,7 +63,7 @@ void CL_PendantLCD::showMenu() {
 
                 this->m_lcd.setCursor(0, 1);
                 this->m_lcd.print("Step: ");
-                this->m_lcd.print(this->m_controlStep);
+                this->m_lcd.print(String(this->currentRealControlStep()));
             }
 
             this->m_previousShowMenuState = *this->m_state;
@@ -89,6 +90,10 @@ void CL_PendantLCD::refreshMenu(){
  */
 char *CL_PendantLCD::currentAxisToString() {
     return m_axisToString[*this->m_controlledAxis];
+}
+
+double CL_PendantLCD::currentRealControlStep() {
+    return (double)*this->m_controlStep / 10;
 }
 
 
