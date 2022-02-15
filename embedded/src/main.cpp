@@ -7,6 +7,7 @@ Encoder axisEncoder(4, 5);
 Encoder mainEncoder(2, 3);
 
 Step availableSteps[4] = { Step::STEP_0_1, Step::STEP_1, Step::STEP_10, STEP_100 };
+int currentStepIndex = 0;
 
 PendantState state = PendantState::STATE_STARTING;
 Axis controlledAxis = Axis::AXIS_X;
@@ -37,9 +38,8 @@ void loop() {
     readAxisEncoderValue();
     readStepEncoderValue();
 
-    // TODO: Use the Axis encoder to define the currently controlled axis
     // TODO: Create a class to send control commands to GRBL
-    // TODO: And sooooo moore !
+    // TODO: Add all the menus
 }
 
 void readAxisEncoderValue(){
@@ -54,18 +54,20 @@ void readAxisEncoderValue(){
 }
 
 void readStepEncoderValue(){
-    if(stepEncoder.read() != stepEncoderLastPosition){
-        int encStepValue = (int)(stepEncoder.read() / 4);
-        encStepValue = encStepValue % 6 - 1;
-        if(encStepValue < 0){
-            encStepValue = 0;
+    if(stepEncoder.read() / 4 != stepEncoderLastPosition){
+        int encStepVariation = (int)(stepEncoder.read() / 4 - stepEncoderLastPosition);
+
+        currentStepIndex += encStepVariation;
+        if(currentStepIndex < 0){
+            currentStepIndex = 0;
         }
-        if(encStepValue > 3){
-            encStepValue = 3;
+        if(currentStepIndex > 3){
+            currentStepIndex = 3;
         }
-        controlStep = availableSteps[encStepValue];
+
+        controlStep = availableSteps[currentStepIndex];
 
         lcd.refreshMenu();
-        stepEncoderLastPosition = stepEncoder.read();
+        stepEncoderLastPosition = stepEncoder.read() / 4;
     }
 }
